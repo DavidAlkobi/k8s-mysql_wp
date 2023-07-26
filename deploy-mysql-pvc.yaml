@@ -19,14 +19,23 @@ spec:
         image: mysql:latest
         env:
           - name: MYSQL_ROOT_PASSWORD
-            value: root
+            valueFrom:
+              secretKeyRef:
+                name: firstsecret
+                key: password
           - name: MYSQL_DATABASE
             value: wordpress
           - name: MYSQL_USER
             value: wordpress
           - name: MYSQL_PASSWORD
             value: root
-
         ports:
         - containerPort: 3306
-    
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mypd
+          
+      volumes:
+      - name: mypd
+        persistentVolumeClaim:
+          claimName: mypvc
